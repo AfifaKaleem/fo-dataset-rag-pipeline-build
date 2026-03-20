@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolarityIQ — Family Office Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c23;
+    --surface3: #1e2330;
+    --border: #252b38;
+    --border2: #2e3547;
+    --gold: #c9a84c;
+    --gold-dim: #a07830;
+    --gold-glow: rgba(201,168,76,0.12);
+    --teal: #3dd9c4;
+    --teal-dim: #1e9e8e;
+    --red: #e85d6a;
+    --text: #e8ecf4;
+    --text2: #9aa3b5;
+    --text3: #5a6478;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+    --font-body: 'Instrument Sans', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Grid scanline ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+    background: linear-gradient(180deg, rgba(10,12,15,0.98) 0%, transparent 100%);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 500; font-size: 11px; color: #000;
+    flex-shrink: 0;
+    animation: pulse-logo 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse-logo {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+    50% { box-shadow: 0 0 20px 4px rgba(201,168,76,0.3); }
+  }
+
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .logo-text span { color: var(--gold); }
+
+  .header-meta {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--text3);
+    text-align: right; line-height: 1.6;
+  }
+
+  .header-meta .live {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--teal); font-size: 10px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 64px 0 40px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700; line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 16px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero-title em {
+    font-style: italic; color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 15px; color: var(--text2); line-height: 1.65;
+    max-width: 560px; margin: 0 auto 40px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.3s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.4s;
+  }
+
+  .stat-item {
+    flex: 1; padding: 16px 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    background: var(--surface);
+    transition: background 0.2s;
+  }
+
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: var(--surface2); }
+
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 22px; font-weight: 500;
+    color: var(--gold); display: block;
+  }
+
+  .stat-label {
+    font-size: 11px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-top: 2px; display: block;
+  }
+
+  /* ── SEARCH ── */
+  .search-section {
+    opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .search-icon {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 16px; pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  #queryInput {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 18px 140px 18px 48px;
+    font-family: var(--font-body);
+    font-size: 15px; color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    caret-color: var(--gold);
+  }
+
+  #queryInput::placeholder { color: var(--text3); }
+
+  #queryInput:focus {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 0 3px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  #queryInput:focus + .search-icon { color: var(--gold); }
+
+  .search-btn {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: var(--gold);
+    color: #000;
+    border: none; border-radius: 6px;
+    padding: 10px 22px;
+    font-family: var(--font-body);
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .search-btn:hover { background: #d4af60; transform: translateY(-50%) scale(1.02); }
+  .search-btn:active { transform: translateY(-50%) scale(0.98); }
+  .search-btn:disabled { background: var(--text3); cursor: not-allowed; }
+
+  /* ── EXAMPLE QUERIES ── */
+  .examples-label {
+    font-family: var(--font-mono);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text3); margin-bottom: 8px;
+  }
+
+  .examples {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 40px;
+  }
+
+  .example-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 12px; color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .example-chip:hover {
+    background: var(--surface3);
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* ── RESULTS ── */
+  #results { min-height: 200px; }
+
+  .results-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-count {
+    font-family: var(--font-mono);
+    font-size: 12px; color: var(--text3);
+  }
+
+  .results-count strong { color: var(--gold); }
+
+  .filter-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  .filter-tag {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--gold);
+  }
+
+  /* ── AI ANSWER PANEL ── */
+  .ai-panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--teal);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-panel::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle at top right, rgba(61,217,196,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .ai-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+
+  .ai-badge-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--teal);
+  }
+
+  .ai-answer {
+    font-size: 14px; line-height: 1.72;
+    color: var(--text2);
+    white-space: pre-wrap;
+  }
+
+  .ai-answer strong, .ai-answer b { color: var(--text); font-weight: 600; }
+  .ai-answer em { color: var(--gold); font-style: normal; }
+
+  /* ── RECORD CARDS ── */
+  .records-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .records-grid { grid-template-columns: 1fr; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+  }
+
+  .record-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: default;
+    animation: cardIn 0.3s ease both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .record-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .card-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 600;
+    color: var(--text); line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .card-badges {
+    display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .badge {
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .badge-sfo { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+  .badge-mfo { background: rgba(61,217,196,0.08); color: var(--teal); border: 1px solid rgba(61,217,196,0.2); }
+  .badge-conf-high { background: rgba(61,217,196,0.08); color: var(--teal); border: 1px solid rgba(61,217,196,0.15); }
+  .badge-conf-med  { background: rgba(201,168,76,0.08); color: var(--gold-dim); border: 1px solid rgba(201,168,76,0.15); }
+  .badge-conf-low  { background: rgba(232,93,106,0.08); color: var(--red); border: 1px solid rgba(232,93,106,0.15); }
+
+  .card-body { padding: 16px 20px; }
+
+  .card-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 10px; font-size: 13px;
+  }
+
+  .card-row:last-child { margin-bottom: 0; }
+
+  .card-icon {
+    font-size: 13px; flex-shrink: 0; width: 18px;
+    margin-top: 1px;
+  }
+
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    width: 80px; flex-shrink: 0; margin-top: 2px;
+  }
+
+  .card-val { color: var(--text2); line-height: 1.45; flex: 1; }
+  .card-val strong { color: var(--text); font-weight: 500; }
+
+  .card-val a {
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .card-val a:hover { text-decoration: underline; }
+
+  .card-footer {
+    padding: 12px 20px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+
+  .signal-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--text3);
+    background: var(--surface3);
+    border-radius: 4px; padding: 4px 8px;
+    border: 1px solid var(--border);
+    flex: 1; min-width: 0;
+  }
+
+  .signal-tag-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ── LOADING STATE ── */
+  .loading-overlay {
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; padding: 60px 0;
+    text-align: center;
+  }
+
+  .loading-overlay.active { display: flex; }
+
+  .loader {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: var(--font-mono);
+    font-size: 12px; color: var(--text3);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text3);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+
+  .empty-state p {
+    font-size: 14px; line-height: 1.6;
+    max-width: 360px; margin: 0 auto;
+  }
+
+  /* ── SCORE BAR ── */
+  .score-bar-wrap {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px;
+  }
+
+  .score-bar {
+    height: 3px; border-radius: 2px;
+    background: var(--border);
+    flex: 1; position: relative; overflow: hidden;
+  }
+
+  .score-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    transition: width 0.4s ease;
+  }
+
+  .score-label {
+    font-family: var(--font-mono);
+    font-size: 9px; color: var(--text3);
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 14px; color: var(--text3);
+  }
+
+  .footer-brand span { color: var(--gold); }
+
+  .footer-meta {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--text3);
+    text-align: right; line-height: 1.7;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">PIQ</div>
+        <div class="logo-text">Polarity<span>IQ</span></div>
+      </div>
+      <div class="header-meta">
+        <div class="live"><div class="live-dot"></div>RAG Pipeline Active</div>
+        <div>250 Family Offices · 28 Intelligence Fields</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-eyebrow">Family Office Intelligence Platform</div>
+      <h1 class="hero-title">Query the world's family offices<br>in <em>natural language</em></h1>
+      <p class="hero-sub">A RAG-powered intelligence layer over 250 international family offices. Ask anything — sector focus, check sizes, co-invest frequency, decision makers, recent signals.</p>
+    </div>
+
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item"><span class="stat-num" id="statTotal">250</span><span class="stat-label">Family Offices</span></div>
+      <div class="stat-item"><span class="stat-num">28</span><span class="stat-label">Intel Fields</span></div>
+      <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Global Regions</span></div>
+      <div class="stat-item"><span class="stat-num" id="statSFO">—</span><span class="stat-label">SFOs</span></div>
+      <div class="stat-item"><span class="stat-num" id="statMFO">—</span><span class="stat-label">MFOs</span></div>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="queryInput" placeholder="e.g. Which SFOs in Europe focus on AI with check sizes above $10M?" autocomplete="off" spellcheck="false" />
+        <button class="search-btn" id="searchBtn" onclick="runQuery()">
+          Search Intel ›
+        </button>
+      </div>
+
+      <div class="examples-label">Example queries →</div>
+      <div class="examples" id="examples"></div>
+    </div>
+
+    <div id="results">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⬡</div>
+        <p>Enter a natural language query above to surface targeted family office intelligence from the dataset.</p>
+      </div>
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+        <div class="loading-text">Retrieving intelligence…</div>
+      </div>
+      <div id="resultsContent" style="display:none"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-brand">Polarity<span>IQ</span> Intelligence</div>
+      <div class="footer-meta">
+        RAG Pipeline · TF-IDF + Cosine Similarity · Claude API Synthesis<br>
+        250 records · 28 fields · Q1 2026 · For research use only
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const EXAMPLES = [
+  "Which family offices focus on AI or technology with check sizes above $10M?",
+  "Show me all SFOs in Europe that have high co-investment frequency",
+  "Find family offices with strong ESG or impact investing mandates",
+  "Which family offices in Asia-Pacific have made recent direct investments?",
+  "Show me family offices in the Middle East with AUM above $10 billion",
+  "Who are the decision makers at the top tech-focused family offices?",
+  "Find family offices focused on healthcare or biotech investments",
+  "Which family offices have fund relationships with KKR or Blackstone?",
+  "Show me family offices founded before 1950 with real estate focus",
+  "Find family offices with very high co-invest frequency and check sizes over $5M",
+];
+
+// Populate example chips
+const exDiv = document.getElementById('examples');
+EXAMPLES.forEach(ex => {
+  const chip = document.createElement('div');
+  chip.className = 'example-chip';
+  chip.textContent = ex;
+  chip.onclick = () => {
+    document.getElementById('queryInput').value = ex;
+    runQuery();
+  };
+  exDiv.appendChild(chip);
+});
+
+// Enter key
+document.getElementById('queryInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runQuery();
+});
+
+// Load stats
+fetch('/api/stats').then(r => r.json()).then(d => {
+  document.getElementById('statTotal').textContent = d.total_records;
+  document.getElementById('statSFO').textContent = d.fo_types['SFO'] || '—';
+  document.getElementById('statMFO').textContent = d.fo_types['MFO'] || '—';
+}).catch(() => {});
+
+function showLoading(show) {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('loadingOverlay').className = show ? 'loading-overlay active' : 'loading-overlay';
+  document.getElementById('resultsContent').style.display = show ? 'none' : '';
+}
+
+function safeTxt(v) {
+  if (!v || v === 'nan' || v === '0' || v === '0.0') return '—';
+  return String(v).trim() || '—';
+}
+
+function checkSizeStr(r) {
+  const mn = parseFloat(r.check_min) || 0;
+  const mx = parseFloat(r.check_max) || 0;
+  if (!mn && !mx) return '—';
+  if (mn === 0) return `Up to $${mx}M`;
+  if (mx === 0) return `$${mn}M+`;
+  return `$${mn}M – $${mx}M`;
+}
+
+function confBadge(conf) {
+  const c = (conf||'').toLowerCase();
+  if (c.includes('high')) return `<span class="badge badge-conf-high">High</span>`;
+  if (c.includes('med'))  return `<span class="badge badge-conf-med">Med</span>`;
+  return `<span class="badge badge-conf-low">Low</span>`;
+}
+
+function buildCard(r, idx) {
+  const foType = (r.fo_type||'SFO').toUpperCase();
+  const badgeCls = foType === 'MFO' ? 'badge-mfo' : 'badge-sfo';
+  const score = r._score || 0;
+  const scoreW = Math.min(100, Math.round(score * 100 / 0.4)) + '%';
+
+  const linkedinVal = safeTxt(r.dm_linkedin);
+  const emailVal    = safeTxt(r.dm_email);
+  const websiteVal  = safeTxt(r.website);
+
+  const linkedinLink = linkedinVal !== '—'
+    ? `<a href="https://${linkedinVal.replace(/^https?:\/\//,'')}" target="_blank">${linkedinVal}</a>`
+    : '—';
+  const emailLink = emailVal !== '—' && emailVal.includes('@')
+    ? `<a href="mailto:${emailVal}">${emailVal}</a>`
+    : '—';
+  const webLink = websiteVal !== '—'
+    ? `<a href="https://${websiteVal.replace(/^https?:\/\//,'')}" target="_blank">${websiteVal}</a>`
+    : '—';
+
+  const signalTxt = safeTxt(r.recent_signal);
+
+  return `
+  <div class="record-card" style="animation-delay:${idx * 0.04}s">
+    <div class="card-header">
+      <div class="card-title">${safeTxt(r.name)}</div>
+      <div class="card-badges">
+        <span class="badge ${badgeCls}">${foType}</span>
+        ${confBadge(r.confidence)}
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-row">
+        <span class="card-icon">📍</span>
+        <span class="card-label">Location</span>
+        <span class="card-val"><strong>${safeTxt(r.city)}, ${safeTxt(r.country)}</strong> · ${safeTxt(r.region)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">👤</span>
+        <span class="card-label">DM</span>
+        <span class="card-val"><strong>${safeTxt(r.dm_name)}</strong> · ${safeTxt(r.dm_title)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">🔗</span>
+        <span class="card-label">Contact</span>
+        <span class="card-val">${linkedinLink} · ${emailLink}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">💰</span>
+        <span class="card-label">AUM</span>
+        <span class="card-val"><strong>${safeTxt(r.aum_range)}</strong> · Check: ${checkSizeStr(r)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">🎯</span>
+        <span class="card-label">Strategy</span>
+        <span class="card-val">${safeTxt(r.investment_strategy)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">🏭</span>
+        <span class="card-label">Sector</span>
+        <span class="card-val"><strong>${safeTxt(r.sector_primary)}</strong> · ${safeTxt(r.sector_secondary)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">📦</span>
+        <span class="card-label">Portfolio</span>
+        <span class="card-val">${safeTxt(r.portfolio_companies)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">🤝</span>
+        <span class="card-label">Co-Invest</span>
+        <span class="card-val">${safeTxt(r.co_invest)} · ESG: ${safeTxt(r.esg_focus)}</span>
+      </div>
+      <div class="card-row">
+        <span class="card-icon">🌐</span>
+        <span class="card-label">Website</span>
+        <span class="card-val">${webLink}</span>
+      </div>
+      <div class="score-bar-wrap">
+        <span class="score-label">Relevance</span>
+        <div class="score-bar"><div class="score-fill" style="width:${scoreW}"></div></div>
+        <span class="score-label">${(score * 100).toFixed(0)}%</span>
+      </div>
+    </div>
+    ${signalTxt !== '—' ? `
+    <div class="card-footer">
+      <div class="signal-tag">
+        <span>📡</span>
+        <span class="signal-tag-text">${signalTxt}</span>
+      </div>
+    </div>` : ''}
+  </div>`;
+}
+
+async function runQuery() {
+  const q = document.getElementById('queryInput').value.trim();
+  if (!q) return;
+
+  showLoading(true);
+  document.getElementById('searchBtn').disabled = true;
+
+  try {
+    const res = await fetch('/api/query', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ query: q, top_k: 20, max_results: 10 })
+    });
+    const data = await res.json();
+    showLoading(false);
+    renderResults(data);
+  } catch(e) {
+    showLoading(false);
+    document.getElementById('resultsContent').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠</div>
+        <p>Error retrieving results. Please try again.</p>
+      </div>`;
+    document.getElementById('resultsContent').style.display = '';
+  }
+
+  document.getElementById('searchBtn').disabled = false;
+}
+
+function renderResults(data) {
+  const cont = document.getElementById('resultsContent');
+  cont.style.display = '';
+
+  // Filter tags
+  const filters = data.filters_applied || {};
+  const fTags = Object.entries(filters)
+    .filter(([k,v]) => v !== false && v !== undefined)
+    .map(([k,v]) => `<span class="filter-tag">${k}: ${v}</span>`)
+    .join('');
+
+  // Header
+  let html = `
+  <div class="results-header">
+    <div class="results-count">
+      Showing <strong>${data.total_results}</strong> results for &ldquo;${escHtml(data.query)}&rdquo;
+      ${data.filter_description !== 'semantic similarity only' ? `<span style="color:var(--text3)"> · Filters: ${escHtml(data.filter_description)}</span>` : ''}
+    </div>
+    <div class="filter-tags">${fTags}</div>
+  </div>`;
+
+  // AI Answer
+  if (data.ai_answer) {
+    const formatted = formatAIAnswer(data.ai_answer);
+    html += `
+    <div class="ai-panel">
+      <div class="ai-badge"><div class="ai-badge-dot"></div>AI Intelligence Summary</div>
+      <div class="ai-answer">${formatted}</div>
+    </div>`;
+  }
+
+  // Record cards
+  if (data.records && data.records.length > 0) {
+    html += '<div class="records-grid">';
+    data.records.forEach((r, i) => { html += buildCard(r, i); });
+    html += '</div>';
+  } else {
+    html += `<div class="empty-state"><div class="empty-icon">○</div><p>No matching family offices found. Try broadening your query.</p></div>`;
+  }
+
+  cont.innerHTML = html;
+  cont.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function formatAIAnswer(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
