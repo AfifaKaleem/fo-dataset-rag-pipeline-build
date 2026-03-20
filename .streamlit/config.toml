@@ -1,3 +1,11 @@
-[tool:pytest]
-testpaths = tests
-python_files = test_*.py
+[theme]
+primaryColor = "#c9a84c"
+backgroundColor = "#0a0c0f"
+secondaryBackgroundColor = "#111318"
+textColor = "#e8ecf4"
+
+[client]
+showErrorDetails = false
+
+[logger]
+level = "warning"
